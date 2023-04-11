@@ -1,0 +1,149 @@
+*Al comenzar Saludar y decir mi nombre, mencionar el tema, recordarles que dejare el minuto y el codigo abajo
+
+  Default.aspx:
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ASPRepeater.Default" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>ASP Repeater</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js">
+    </script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <style>
+                h1{
+                    margin-top:50%;
+                    color:orangered;
+                }
+                h2{
+                    text-align:center;
+                    color:dodgerblue;
+                    font-size:10em;
+                }
+                img{
+                    width:30vw;
+                    height:30vw;
+                }
+                .row{
+                    
+                }
+            </style>
+            <h2>Blog Posts</h2>
+            <br />
+            <br />
+           <asp:Repeater ID="repPosts" runat="server">
+               <ItemTemplate>
+                  <div class="row" style="background-color:whitesmoke;">
+                        <div class="col-sm-1"></div>
+                       
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-2">
+                            <h1><b>Título:</b> <%#  Eval("title") %></h1>
+                        </div>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-3">
+                            <h1><b>Keywords:</b> <%#  Eval("keywords") %></h1>
+                        </div>
+                       <div class="col-sm-3">
+                             <img  src="<%# "images/"+ Eval("image") %>" />
+                        </div>
+                        <div class="col-sm-1"></div>
+                    </div>
+                    <br />
+                    <br />
+                    <br />
+               </ItemTemplate>
+           </asp:Repeater>
+
+        </div>
+        
+    </form>
+</body>
+</html>
+
+
+logic.cs:
+
+using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+
+namespace ASPRepeater
+{
+    public class logic
+    {
+        public MySqlConnection getConnection()
+        {
+            MySqlConnection cn = new MySqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["TedConnection"].ConnectionString.ToString());
+            return cn;
+        }
+
+        public DataSet getBlogPosts()
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                using (MySqlConnection cn = getConnection())
+                {
+                    cn.Open();
+
+                    string query = @"select id,title,image,keywords from Posts where deleted=0;";
+                    MySqlCommand cmd = new MySqlCommand(query, cn);
+                    MySqlDataAdapter da = new MySqlDataAdapter();
+                    da.SelectCommand = cmd;
+                    da.Fill(ds);
+                    cn.Close();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                ds = null;
+            }
+
+            return ds;
+        }
+    }
+}
+
+
+Default.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace ASPRepeater
+{
+    public partial class Default : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            logic objLogic = new logic();
+            DataSet ds = objLogic.getBlogPosts();
+
+            repPosts.DataSource = ds;
+            repPosts.DataBind();
+        }
+    }
+}
+
+*Al finalizar Espero que les haya gustado, si tienen dudas,aca abajo les dejo el codigo recuerden suscribirse y campanita
