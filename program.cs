@@ -6,3 +6,4 @@
             root.SetAttribute("schemaLocation", "http://www.w3.org/2001/XMLSchema-instance", "http://www.org/schema/.xsd");
             doc.AppendChild(root);
             Console.WriteLine(doc.OuterXml);
+//https://csharpforums.net/threads/xsi-missing-from-schema-location.7077/
